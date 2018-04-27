@@ -50,15 +50,19 @@ def new(request):
         client.save()
         return JsonResponse({"response":client.c_id})
     else:
-        return JsonResponse({"response":"field_err"})
+        return JsonResponse({"response":"field_er"})
 
 # Authentication
 def authentication(request):
     if 'phone' in request.POST:
-        if Client.objects.filter(phone=request.POST['phone']).exists():
-            return JsonResponse({"response":"allowed"})
-        else:
-            return JsonResponse({"response":"denied"})
+#        if Client.objects.filter(phone=request.POST['phone']).exists():
+        try:
+            client = Client.objects.get(phone=request.POST['phone'])
+        except Client.DoesNotExist as Exc:
+            return JsonResponse({"response":"denied"}) 
+        return JsonResponse({"response":client.c_id})
+#        else:
+#            return JsonResponse({"response":"denied"})
     else:
         return JsonResponse({"response":"error"})
 
